@@ -982,9 +982,9 @@ func update_matrices(camera_tr, view_proj, new_size: Vector2i):
 	general_data.encode_float(idx, ambient_occlusion_color.a); idx += 4
 
 	general_data.encode_float(idx, lerpf(atmosphere_color.r, sampled_environment_fog_color.r, use_environment_fog)); idx += 4
-	general_data.encode_float(idx, lerpf(atmosphere_color.r, sampled_environment_fog_color.g, use_environment_fog)); idx += 4
-	general_data.encode_float(idx, lerpf(atmosphere_color.r, sampled_environment_fog_color.b, use_environment_fog)); idx += 4
-	general_data.encode_float(idx, lerpf(atmosphere_color.r, sampled_environment_fog_color.a, use_environment_fog)); idx += 4
+	general_data.encode_float(idx, lerpf(atmosphere_color.g, sampled_environment_fog_color.g, use_environment_fog)); idx += 4
+	general_data.encode_float(idx, lerpf(atmosphere_color.b, sampled_environment_fog_color.b, use_environment_fog)); idx += 4
+	general_data.encode_float(idx, lerpf(atmosphere_color.a, sampled_environment_fog_color.a, use_environment_fog)); idx += 4
 
 	general_data.encode_float(idx, small_noise_scale); idx += 4
 	general_data.encode_float(idx, min_step_distance); idx += 4
