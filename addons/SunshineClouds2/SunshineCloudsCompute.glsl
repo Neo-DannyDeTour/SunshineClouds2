@@ -677,7 +677,7 @@ void main() {
 	for (int i = 0; i < stepCount; i++) {
 		
 		if (traveledDistance > linear_depth){
-			depthFade = 1.0 - smoothstep(linear_depth - newStep, linear_depth, traveledDistance);
+			// depthFade = 1.0 - smoothstep(linear_depth - newStep, linear_depth, traveledDistance);
 			depthBreak = true;
 		}
 		
@@ -692,11 +692,11 @@ void main() {
 		if (clamp(curPos.y, cloudfloor, cloudceiling) == curPos.y){
 
 			curLod = 1.0 - clamp(traveledDistance / lodMaxDistance, 0.0, 1.0);
-			newdensity = sampleSceneCoarse(largeNoisePos, curPos, cloudceiling, cloudfloor, maskSample.a, largenoiseScale, coverage, curLod);
-			
-			if (newdensity > 0.0) {
-				newdensity = pow(sampleScene(largeNoisePos, mediumNoisePos, smallNoisePos, curPos, cloudceiling, cloudfloor, maskSample.a, largenoiseScale, mediumnoiseScale, smallnoiseScale, coverage, smallNoiseMultiplier, curlPower, curLod, false) * densityMultiplier, sharpness) * depthFade;
-			}
+			// newdensity = sampleSceneCoarse(largeNoisePos, curPos, cloudceiling, cloudfloor, maskSample.a, largenoiseScale, coverage, curLod);
+			newdensity = pow(sampleScene(largeNoisePos, mediumNoisePos, smallNoisePos, curPos, cloudceiling, cloudfloor, maskSample.a, largenoiseScale, mediumnoiseScale, smallnoiseScale, coverage, smallNoiseMultiplier, curlPower, curLod, false) * densityMultiplier, sharpness) * depthFade;
+			// if (newdensity > 0.0) {
+			// 	newdensity = pow(sampleScene(largeNoisePos, mediumNoisePos, smallNoisePos, curPos, cloudceiling, cloudfloor, maskSample.a, largenoiseScale, mediumnoiseScale, smallnoiseScale, coverage, smallNoiseMultiplier, curlPower, curLod, false) * densityMultiplier, sharpness) * depthFade;
+			// }
 			
 			
 			if (newdensity > 0.0){
@@ -820,11 +820,11 @@ void main() {
 			newStep = maxstep;
 		}
 		
-
+		traveledDistance += newStep;
 		if (depthBreak){
 			break;
 		}
-		traveledDistance += newStep;
+		
 	}
 
 	density *= clamp(smoothstep(maxstep * stepCount, minstep * stepCount, traveledDistance), 0.0, 1.0);
@@ -945,7 +945,7 @@ void main() {
 		else{
 			currentColorAccumilation = (currentColorAccumilation * accumdecay) + lightColor * (1.0 - accumdecay);
 
-			currentDataAccumilation.r = mix(currentDataAccumilation.r, initialdistanceSample,  (1.0 - accumdecay));
+			currentDataAccumilation.r = mix(currentDataAccumilation.r, initialdistanceSample, (1.0 - accumdecay));
 			currentDataAccumilation.g = mix(currentDataAccumilation.g, traveledDistance,  (1.0 - accumdecay));
 			currentDataAccumilation.b = mix(currentDataAccumilation.b, finalDensityDistance,  (1.0 - accumdecay));
 		}
@@ -960,7 +960,7 @@ void main() {
 		currentDataAccumilation = imageLoad(accum_2B_image, adjustedUV).rgba;
 
 		float currentDepthBreak = float(depthBreak);
-
+		
 		// bool lastDepthBreak = currentDataAccumilation.a < 0.0;
 		float if_break = max(float(override), abs(length(clampedUV - adjustedUV)));
 		// if_break = max(if_break, lightColor.a - 0.8 - currentColorAccumilation.a); //Lets super high accumilation still look passable, but at the cost of less soft edges.
@@ -975,7 +975,7 @@ void main() {
 		else{
 			currentColorAccumilation = (currentColorAccumilation * accumdecay) + lightColor * (1.0 - accumdecay);
 
-			currentDataAccumilation.r = mix(currentDataAccumilation.r, initialdistanceSample,  (1.0 - accumdecay));
+			currentDataAccumilation.r = mix(currentDataAccumilation.r, initialdistanceSample, (1.0 - accumdecay));
 			currentDataAccumilation.g = mix(currentDataAccumilation.g, traveledDistance,  (1.0 - accumdecay));
 			currentDataAccumilation.b = mix(currentDataAccumilation.b, finalDensityDistance,  (1.0 - accumdecay));
 		}
@@ -998,6 +998,8 @@ void main() {
 	// if (depthBreak){
 	// 	currentColorAccumilation.rgb = vec3(1.0, 0.0, 0.0);
 	// }
+
+	// currentDataAccumilation.g += maxTheoreticalStep * float(depthBreak);
 
 	currentDataAccumilation.r = min(currentDataAccumilation.r, initialdistanceSample);
 	

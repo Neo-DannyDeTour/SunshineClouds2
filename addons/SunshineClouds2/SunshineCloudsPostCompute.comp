@@ -335,6 +335,7 @@ void main() {
 		// 	lerp = (clamp((traveledDistance - linear_depth) / (traveledDistance - finalDensityDistance), 0.0, 1.0)) * firsttravelblend;
 		// }
 
+
 		// results in clouds in between the player and solid objects being softer, but has artifacts around objects with clouds behind them.
 		if (initialdistanceSample > linear_depth){
 			lerp = 1.0;
@@ -376,6 +377,7 @@ void main() {
         color.rgb = mix(physicalFogColor, mix(color.rgb, ambientfogdistancecolor, clamp(fogweight, 0.0, 1.0)),  genericData.data.atmosphere_simple_blend);
 
 		color.rgb = mix(color.rgb, currentAccumilation.rgb, density);
+		// color.rgb = vec3(clamp(traveledDistance / maxTheoreticalStep, 0.0, 1.0));
 
 		if (debugCollisions){
 			color.rgb = vec3(lerp);

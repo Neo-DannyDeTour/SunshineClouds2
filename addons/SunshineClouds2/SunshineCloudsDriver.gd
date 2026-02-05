@@ -15,7 +15,12 @@ class_name SunshineCloudsDriverGD
 
 
 @export_group("Compositor Resource")
-@export var clouds_resource: SunshineCloudsGD
+@export var clouds_resource: SunshineCloudsGD:
+	get:
+		return clouds_resource
+	set(value):
+		clouds_resource = value
+		clouds_res_changed()
 @export_group("Optional World Environment")
 @export var ambience_sample_environment: Environment
 @export_group("Light Controls")
@@ -152,18 +157,23 @@ func build_new_clouds():
 			if not ambience_sample_environment:
 				ambience_sample_environment = env.environment
 			
-			var newClouds = SunshineCloudsGD.new()
-			ResourceSaver.save(newClouds, "res://NewCloudsGD.tres")
-			clouds_resource = ResourceLoader.load("res://NewCloudsGD.tres")
+			clouds_resource = SunshineCloudsGD.new()
 			
-			if not env.compositor:
-				env.compositor = Compositor.new()
-			env.compositor.compositor_effects = [clouds_resource]
+			#if not env.compositor:
+				#env.compositor = Compositor.new()
+			#env.compositor.compositor_effects = [clouds_resource]
 			
 			update_continuously = true
 		else:
 			printerr("No world environment found.")
 
+func clouds_res_changed():
+	if (is_inside_tree()):
+		var env : WorldEnvironment = recursively_find_env(get_tree().root)
+		if (env):
+			if not env.compositor:
+				env.compositor = Compositor.new()
+			env.compositor.compositor_effects = [clouds_resource]
 
 func recursively_find_env(thisNode: Node) -> WorldEnvironment:
 	for child in thisNode.get_children():

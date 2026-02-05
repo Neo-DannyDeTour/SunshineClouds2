@@ -7,21 +7,21 @@ class_name SunshineCloudsGD
 
 @export_group("Basic Settings")
 @export_range(0, 1) var clouds_coverage : float = 0.874
-@export_range(0, 20) var clouds_density : float = 1.0
+@export_range(0, 20) var clouds_density : float = 0.14
 @export_range(0, 2) var atmospheric_density : float = 0.503
-@export_range(0, 10) var lighting_density : float = 0.171
+@export_range(0, 10) var lighting_density : float = 0.982
 @export_range(0, 1) var fog_effect_ground : float = 1.0
 @export_range(0, 1) var use_environment_fog : float = 0.0
 
 @export_subgroup("Colors")
-@export_range(0, 1) var clouds_anisotropy : float = 0.185
-@export_range(0, 1) var clouds_powder : float = 0.851
+@export_range(0, 1) var clouds_anisotropy : float = 0.16
+@export_range(0, 1) var clouds_powder : float = 0.178
 @export var cloud_ambient_color : Color = Color(0.761, 0.784, 0.824, 1.0)
 @export var cloud_ambient_tint : Color = Color(0.133, 0.2, 0.243, 1.0)
 
 @export var atmosphere_color : Color = Color(1.0, 1.0, 1.0, 1.0)
 @export var sampled_environment_fog_color : Color = Color(0.518, 0.553, 0.608, 1.0)
-@export var ambient_occlusion_color : Color = Color(0.0, 0.0, 0.0, 1.0)
+@export var ambient_occlusion_color : Color = Color(1.0, 0.0, 0.0, 1.0)
 
 @export_subgroup("Structure")
 @export_range(0, 1) var accumulation_decay : float = 0.7
@@ -29,19 +29,19 @@ class_name SunshineCloudsGD
 @export_range(100, 500000) var large_noise_scale : float = 120000.0
 @export_range(100, 100000) var medium_noise_scale : float = 20000.0
 @export_range(100, 10000) var small_noise_scale : float = 8500
-@export_range(0, 2) var clouds_sharpness : float = 0.842
+@export_range(0, 2) var clouds_sharpness : float = 0.746
 @export_range(0, 3) var clouds_detail_power : float = 1.075
 @export_range(0, 50000) var curl_noise_strength : float = 4500.0
 @export_range(0, 2) var lighting_sharpness : float = 0.38
 @export_range(0, 1) var wind_swept_range : float = 0.54
-@export_range(0, 5000) var wind_swept_strength : float = 3500.0
+@export_range(0, 5000) var wind_swept_strength : float = 0.0
 
 @export var cloud_floor : float = 1500.0
 @export var cloud_ceiling : float = 25000.0
 
 @export_subgroup("Performance")
 @export var max_step_count : float = 300
-@export var max_lighting_steps : float = 16
+@export var max_lighting_steps : float = 32
 @export_enum("Native","Half","Quarter","Eighth") var resolution_scale = 1:
 	get:
 		return resolution_scale
@@ -49,7 +49,7 @@ class_name SunshineCloudsGD
 		resolution_scale = value
 		last_size = Vector2i(0, 0)
 		lights_updated = true
-@export_range(0, 2) var lod_bias : float = 2.0
+@export_range(0, 2) var lod_bias : float = 1.0
 
 @export_subgroup("Noise Textures")
 @export var dither_noise : Texture3D
@@ -62,8 +62,8 @@ class_name SunshineCloudsGD
 
 @export_group("Advanced Settings")
 @export_subgroup("Visuals")
-@export_range(0, 1000) var dither_speed : float = 1000.0
-@export_range(0, 20) var blur_power : float = 3.0
+@export_range(0, 1000) var dither_speed : float = 15.111
+@export_range(0, 20) var blur_power : float = 1.0
 @export_range(0, 6) var blur_quality : float = 1.0
 
 @export_subgroup("Reflections")
@@ -72,7 +72,7 @@ class_name SunshineCloudsGD
 @export_subgroup("Performance")
 @export var min_step_distance : float = 100.0
 @export var max_step_distance : float = 500.0
-@export var lighting_travel_distance : float = 5000.0
+@export var lighting_travel_distance : float = 10000.0
 
 @export_subgroup("Mask")
 @export var extra_large_used_as_mask : bool = false
