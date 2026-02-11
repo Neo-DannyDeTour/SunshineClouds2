@@ -277,6 +277,9 @@ float sampleLighting(
 			float extraLargeShape = texture(extra_large_noise, (curPos.xz - extralargeNoisePos.xz) / extralargenoisescale).a;
 
 			thisDensity = sampleScene(largeNoisePos, mediumNoisePos, smallNoisePos, curPos, cloudceiling, cloudfloor, extraLargeShape, largenoisescale, mediumnoisescale, smallnoisescale, coverage, smallscalePower, curlPower, lod, true) * densityMultiplier * eachStepWeight;
+			// if (thisDensity <= 0.0){
+			// 	break;
+			// }
 			density += mix(1.0, thisDensity, heightGradient);
 		}
 		else{
