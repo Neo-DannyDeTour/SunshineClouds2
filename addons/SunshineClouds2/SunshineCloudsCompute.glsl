@@ -388,7 +388,7 @@ vec4 sampleAllAtmospherics(
 	for (float i = 0.0; i < stepCount; i++) {
 		traveledDistance = stepDistance * (i + 1);
 		
-		currentWeight = density * (1.0 - clamp((highestDensityDistance - traveledDistance) / stepDistance, 0.0, 1.0));
+		currentWeight = density * (1.0 - (highestDensityDistance - traveledDistance) / stepDistance);
 
 		if (traveledDistance > linear_depth || currentWeight >= 1.0){
 			traveledDistance = traveledDistance - stepDistance;
@@ -720,7 +720,7 @@ void main() {
 					float densitySample = sampleLighting(thislightingStepCount, curPos, extralargeNoisePos, largeNoisePos, mediumNoisePos, smallNoisePos, sundir, densityMultiplier * lightingdensityMultiplier, sunUpWeight, lightingStepDistance, cloudceiling, cloudfloor, extralargenoiseScale, largenoiseScale, mediumnoiseScale, smallnoiseScale, coverage, smallNoiseMultiplier, curlPower, curLod);
 					densitySample = BeersLaw(lightingStepDistance, densitySample * henyeygreenstein);
 					//densitySample = Powder(lightingStepDistance, densitySample);
-					float thisStepLightingWeight = (clamp(pow(densitySample, lightingSharpness), 0.0, 1.0)) * sunUpWeight;
+					float thisStepLightingWeight = (pow(densitySample, lightingSharpness)) * sunUpWeight;
 					
 
 					lightColor.rgb += pow(directionalLights[lightI].color.rgb * directionalLights[lightI].color.a * thisStepLightingWeight, vec3(2.2)) * powderEffect;
@@ -801,7 +801,7 @@ void main() {
 			}
 
 			if (i == 0){
-				newdensity = mix(newdensity, 0.0, clamp(traveledDistance / maxstep, 0.0, 1.0));
+				newdensity = mix(newdensity, 0.0, traveledDistance / maxstep);
 			}
 
 			density += newdensity;
@@ -836,9 +836,10 @@ void main() {
 	paintedColor = clamp(paintedColor / lightingSamples, 0.0, 1.0);
 
 
-	vec3 ambientLight = genericData.data.ambientLightColor.rgb * clamp(totalLightPower, 0.0, 1.0);
-	ambientLight = mix(ambientLight, ambientLight * aobase.rgb, clamp(ambient * aobase.a, 0.0, 1.0)) * paintedColor;
-	lightColor.rgb = ambientLight + clamp(lightColor.rgb / lightingSamples, vec3(0.0), vec3(2.0));
+	vec3 ambientLight = genericData.data.ambientLightColor.rgb * totalLightPower;
+	ambientLight = mix(ambientLight, ambientLight * aobase.rgb, ambient * aobase.a) * paintedColor;
+	lightColor.rgb += ambientLight;
+	// lightColor.rgb = ambientLight + clamp(lightColor.rgb / lightingSamples, vec3(0.0), vec3(1.0));
 	lightColor.a = density;
 
 	vec3 physicalFogColor = lightColor.rgb;
@@ -855,14 +856,14 @@ void main() {
 			float lightPower = light.color.a * sunUpWeight * sundensityaffect;
 			vec4 atmosphericData = sampleAllAtmospherics(rayOrigin, raydirection, linear_depth, traveledDistance, 0.0, traveledDistance / 10.0, 10.0, atmosphericDensity, sundir, light.color.rgb * lightPower, ambientfogdistancecolor);
 			
-			physicalFogColor = mix(physicalFogColor, atmosphericData.rgb, clamp(atmosphericData.a, 0.0, 1.0)); //causes jitter in the sky
-			fogweight += clamp(atmosphericData.a, 0.0, 1.0);
+			physicalFogColor = mix(physicalFogColor, atmosphericData.rgb, atmosphericData.a); //causes jitter in the sky
+			fogweight += atmosphericData.a;
 		}
 	}
 
 
 
-	lightColor.rgb = mix(physicalFogColor, mix(lightColor.rgb, ambientfogdistancecolor, clamp(fogweight, 0.0, 1.0)),  genericData.data.atmosphere_simple_blend);
+	lightColor.rgb = mix(physicalFogColor, mix(lightColor.rgb, ambientfogdistancecolor, fogweight),  genericData.data.atmosphere_simple_blend);
 	//lightColor.rgb = physicalFogColor;
 	// initialdistanceSample = max(initialdistanceSample, 0.0);
 

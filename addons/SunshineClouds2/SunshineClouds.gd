@@ -15,7 +15,7 @@ class_name SunshineCloudsGD
 
 @export_subgroup("Colors")
 @export_range(0, 1) var clouds_anisotropy : float = 0.16
-@export_range(0, 1) var clouds_powder : float = 0.178
+@export_range(0, 1) var clouds_powder : float = 0.5
 @export var cloud_ambient_color : Color = Color(0.761, 0.784, 0.824, 1.0)
 @export var cloud_ambient_tint : Color = Color(0.133, 0.2, 0.243, 1.0)
 
@@ -63,14 +63,14 @@ class_name SunshineCloudsGD
 @export_group("Advanced Settings")
 @export_subgroup("Visuals")
 @export_range(0, 1000) var dither_speed : float = 15.111
-@export_range(0, 20) var blur_power : float = 1.0
+@export_range(0, 20) var blur_power : float = 2.0
 @export_range(0, 6) var blur_quality : float = 1.0
 
 @export_subgroup("Reflections")
 @export var reflections_globalshaderparam : String = ""
 
 @export_subgroup("Performance")
-@export var min_step_distance : float = 100.0
+@export var min_step_distance : float = 400.0
 @export var max_step_distance : float = 500.0
 @export var lighting_travel_distance : float = 10000.0
 
