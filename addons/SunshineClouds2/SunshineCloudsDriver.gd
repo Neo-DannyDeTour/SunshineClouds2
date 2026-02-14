@@ -19,8 +19,9 @@ class_name SunshineCloudsDriverGD
 	get:
 		return clouds_resource
 	set(value):
+		clouds_res_removed()
 		clouds_resource = value
-		clouds_res_changed()
+		clouds_res_added()
 @export_group("Optional World Environment")
 @export var ambience_sample_environment: Environment
 @export_group("Light Controls")
@@ -167,13 +168,27 @@ func build_new_clouds():
 		else:
 			printerr("No world environment found.")
 
-func clouds_res_changed():
-	if (is_inside_tree()):
+#Disables the previous clouds when removing them.
+func clouds_res_removed():
+	if clouds_resource && is_inside_tree():
 		var env : WorldEnvironment = recursively_find_env(get_tree().root)
-		if (env):
+		if env && env.compositor != null:
+			var effects = env.compositor.compositor_effects
+			effects.erase(clouds_resource)
+			env.compositor.compositor_effects = effects
+
+#Enables new clouds when adding them
+func clouds_res_added():
+	if clouds_resource && is_inside_tree():
+		var env : WorldEnvironment = recursively_find_env(get_tree().root)
+		if env:
 			if not env.compositor:
 				env.compositor = Compositor.new()
-			env.compositor.compositor_effects = [clouds_resource]
+				env.compositor.compositor_effects = [clouds_resource]
+			else:
+				var effects = env.compositor.compositor_effects
+				effects.append(clouds_resource)
+				env.compositor.compositor_effects = effects
 
 func recursively_find_env(thisNode: Node) -> WorldEnvironment:
 	for child in thisNode.get_children():
