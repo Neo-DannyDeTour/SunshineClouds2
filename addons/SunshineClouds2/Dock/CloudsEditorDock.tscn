@@ -35,24 +35,24 @@ offset_bottom = 278.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_c42ej")
-CloudsStatusLabel = NodePath("ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/Label")
-CloudsActiveToggle = NodePath("ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/CheckButton")
-CloudsDriverRefresh = NodePath("ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/DriverQueryButton")
-CloudsDriverAccordianButton = NodePath("ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/AccordionButton")
-UseMaskToggle = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MaskUsageCheckButton")
-MaskStatusLabel = NodePath("ScrollContainer/VBoxContainer/MaskStatusOutput")
-MaskFilePath = NodePath("ScrollContainer/VBoxContainer/HBoxContainer/LineEdit")
-MaskResolution = NodePath("ScrollContainer/VBoxContainer/MaskSettings/VBoxContainer/Resolution/SpinBox")
-MaskWidth = NodePath("ScrollContainer/VBoxContainer/MaskSettings/VBoxContainer/Width/SpinBox")
-DrawWeightEnable = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/CloudsWeight")
-DrawColorEnable = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/CloudsColor")
-DrawColorPicker = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/GridContainer/ColorPicker")
-DrawTools = NodePath("ScrollContainer/VBoxContainer/DrawTools")
-DrawSharpness = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/GridContainer/VBoxContainer/Sharpness")
-DrawStrength = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/GridContainer/VBoxContainer/Strength")
+clouds_status_label = NodePath("ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/Label")
+clouds_active_toggle = NodePath("ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/CheckButton")
+clouds_driver_refresh = NodePath("ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/DriverQueryButton")
+clouds_driver_accordian_button = NodePath("ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/AccordionButton")
+use_mask_toggle = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MaskUsageCheckButton")
+mask_status_label = NodePath("ScrollContainer/VBoxContainer/MaskStatusOutput")
+mask_file_path = NodePath("ScrollContainer/VBoxContainer/HBoxContainer/LineEdit")
+mask_resolution = NodePath("ScrollContainer/VBoxContainer/MaskSettings/VBoxContainer/Resolution/SpinBox")
+mask_width = NodePath("ScrollContainer/VBoxContainer/MaskSettings/VBoxContainer/Width/SpinBox")
+draw_weight_enable = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/CloudsWeight")
+draw_color_enable = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/CloudsColor")
+draw_color_picker = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/GridContainer/ColorPicker")
+draw_tools = NodePath("ScrollContainer/VBoxContainer/DrawTools")
+draw_sharpness = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/GridContainer/VBoxContainer/Sharpness")
+draw_strength = NodePath("ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/GridContainer/VBoxContainer/Strength")
 compute_shader = ExtResource("2_yqrwx")
-DrawingColor = Color(0.769578, 0.731927, 0.149317, 1)
-InvertedDrawingColor = Color(0.765928, 0.254294, 0.0203708, 1)
+drawing_color = Color(0.769578, 0.731927, 0.149317, 1)
+inverted_drawing_color = Color(0.765928, 0.254294, 0.0203708, 1)
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 1
@@ -294,8 +294,8 @@ layout_mode = 2
 theme_override_constants/h_separation = 20
 columns = 2
 script = ExtResource("13_w3q10")
-TargetColumnCount = 2
-MinimumColumnSize = 250.0
+target_column_count = 2
+minimum_column_size = 250.0
 
 [node name="ColorPicker" type="ColorPicker" parent="ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/GridContainer"]
 layout_mode = 2
@@ -337,13 +337,13 @@ value = 0.2
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 
-[connection signal="text_submitted" from="ScrollContainer/VBoxContainer/HBoxContainer/LineEdit" to="." method="UpdateMaskSettings" unbinds=1]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/MaskBuildButton" to="." method="UpdateMaskSettings"]
-[connection signal="value_changed" from="ScrollContainer/VBoxContainer/MaskSettings/VBoxContainer/Resolution/SpinBox" to="." method="UpdateMaskSettings" unbinds=1]
-[connection signal="value_changed" from="ScrollContainer/VBoxContainer/MaskSettings/VBoxContainer/Width/SpinBox" to="." method="UpdateMaskSettings" unbinds=1]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/CheckButton" to="." method="SetCloudsUpdating"]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/DriverQueryButton" to="." method="RefreshSceneNode"]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MaskUsageCheckButton" to="." method="UpdateMaskSettings"]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/CloudsWeight" to="." method="DrawWeightToggled"]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/CloudsColor" to="." method="DrawColorToggled"]
-[connection signal="pressed" from="ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/Button" to="." method="FloodFill"]
+[connection signal="text_submitted" from="ScrollContainer/VBoxContainer/HBoxContainer/LineEdit" to="." method="update_mask_settings" unbinds=1]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/MaskBuildButton" to="." method="update_mask_settings"]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/MaskSettings/VBoxContainer/Resolution/SpinBox" to="." method="update_mask_settings" unbinds=1]
+[connection signal="value_changed" from="ScrollContainer/VBoxContainer/MaskSettings/VBoxContainer/Width/SpinBox" to="." method="update_mask_settings" unbinds=1]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/CheckButton" to="." method="set_clouds_updating"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer/DriverQueryButton" to="." method="refresh_scene_node"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MaskUsageCheckButton" to="." method="update_mask_settings"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/CloudsWeight" to="." method="draw_weight_toggled"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/CloudsColor" to="." method="draw_color_toggled"]
+[connection signal="pressed" from="ScrollContainer/VBoxContainer/DrawTools/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer/HBoxContainer/Button" to="." method="flood_fill"]
