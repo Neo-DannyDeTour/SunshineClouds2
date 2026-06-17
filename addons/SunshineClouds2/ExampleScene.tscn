@@ -124,15 +124,15 @@ omni_range = 20000.0
 [node name="SunshineCloudsEffector" type="Node3D" parent="." unique_id=2140400999]
 transform = Transform3D(0.24165103, 0, 0.97036314, 0, 1, 0, -0.97036314, 0, 0.24165103, 8262.199, 4970.841, -38297.613)
 script = ExtResource("3_afwv5")
-Radius = 20000.0
-Power = 2.0
+radius = 20000.0
+power = 2.0
 metadata/_custom_type_script = "uid://bxlm4e5qfb7uu"
 
 [node name="SunshineCloudsEffector2" type="Node3D" parent="." unique_id=1183784966]
 transform = Transform3D(0.241651, 0, 0.970363, 0, 1, 0, -0.970363, 0, 0.241651, 7401.0215, 4970.841, -38121.527)
 script = ExtResource("3_afwv5")
-Radius = 16000.0
-Power = -3.0
+radius = 16000.0
+power = -3.0
 metadata/_custom_type_script = "uid://bxlm4e5qfb7uu"
 
 [node name="SunshineCloudsDriverGD" type="Node" parent="." unique_id=1968101892 node_paths=PackedStringArray("tracked_directional_lights", "tracked_point_lights", "tracked_point_effectors")]
