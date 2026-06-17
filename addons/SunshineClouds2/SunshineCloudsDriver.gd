@@ -1,6 +1,7 @@
 @tool
-class_name SunshineCloudsDriverGD
 @icon("res://addons/SunshineClouds2/CloudsDriverIcon.svg")
+class_name SunshineCloudsDriverGD
+
 extends Node
 @export var update_continuously: bool = false:
 	get:

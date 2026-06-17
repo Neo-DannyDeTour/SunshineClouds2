@@ -103,25 +103,43 @@ func find_scene_node() -> Node:
 		iterationcount -= 1
 		scene_root = editor_interface.get_edited_scene_root()
 	return scene_root
-func scene_changed(scene_root : Node):
+
+
+func scene_changed(scene_root: Node) -> void:
+	print("Executing scene_changed: Resetting UI state and retrieving clouds driver.")
 	pause_updates = true
-	draw_weight_enable.button_pressed = false
-	draw_color_enable.button_pressed = false
-	last_image_data = []
+	
+	# Safely check if UI elements are initialized before modifying them
+	if is_instance_valid(draw_weight_enable):
+		draw_weight_enable.button_pressed = false
+		
+	if is_instance_valid(draw_color_enable):
+		draw_color_enable.button_pressed = false
+		
+	last_image_data = PackedByteArray()
 	disable_draw_mode()
 	current_root = scene_root
 	driver = retrieve_clouds_driver(scene_root)
-	if (driver != null && driver.clouds_resource != null):
+	
+	if is_instance_valid(driver) and is_instance_valid(driver.clouds_resource):
 		driver.clouds_resource.mask_drawn_rid = RID()
-		mask_width.value = driver.clouds_resource.mask_width_km
-		use_mask_toggle.button_pressed = driver.clouds_resource.extra_large_used_as_mask
-	if ResourceLoader.exists(mask_file_path.text):
-		var image: Variant = ResourceLoader.load(mask_file_path.text) as Image
-		if image:
-			print("retrieved mask scale")
+		
+		if is_instance_valid(mask_width):
+			mask_width.value = driver.clouds_resource.mask_width_km
+			
+		if is_instance_valid(use_mask_toggle):
+			use_mask_toggle.button_pressed = driver.clouds_resource.extra_large_used_as_mask
+			
+	if is_instance_valid(mask_file_path) and ResourceLoader.exists(mask_file_path.text):
+		var image: Image = ResourceLoader.load(mask_file_path.text) as Image
+		if image and is_instance_valid(mask_resolution):
+			print("Executing scene_changed: Retrieved mask scale successfully.")
 			mask_resolution.value = image.get_width()
+			
 	pause_updates = false
 	update_status_display()
+
+
 func retrieve_clouds_driver(scene_root : Node) -> SunshineCloudsDriverGD:
 	if (scene_root != null):
 		for child in scene_root.get_children():
@@ -131,30 +149,56 @@ func retrieve_clouds_driver(scene_root : Node) -> SunshineCloudsDriverGD:
 			if (new_driver):
 				return new_driver
 	return null
+
+
 func update_status_display() -> void:
-	if (driver != null):
-		clouds_active_toggle.disabled = false
-		clouds_active_toggle.button_pressed = driver.update_continuously
-		clouds_driver_refresh.visible = false
-		clouds_status_label.text = "Clouds present"
-		if ResourceLoader.exists(mask_file_path.text):
-			mask_status_label.text = "Mask Detected: " + mask_file_path.text
-			draw_tools.visible = true
+	if is_instance_valid(driver):
+		if is_instance_valid(clouds_active_toggle):
+			clouds_active_toggle.disabled = false
+			clouds_active_toggle.button_pressed = driver.update_continuously
+			
+		if is_instance_valid(clouds_driver_refresh):
+			clouds_driver_refresh.visible = false
+			
+		if is_instance_valid(clouds_status_label):
+			clouds_status_label.text = "Clouds present"
+			
+		if is_instance_valid(mask_file_path) and ResourceLoader.exists(mask_file_path.text):
+			if is_instance_valid(mask_status_label):
+				mask_status_label.text = "Mask Detected: " + mask_file_path.text
+			if is_instance_valid(draw_tools):
+				draw_tools.visible = true
 		else:
-			mask_status_label.text = "Mask Not Found."
+			if is_instance_valid(mask_status_label):
+				mask_status_label.text = "Mask Not Found."
+			if is_instance_valid(draw_tools):
+				draw_tools.visible = false
+	else:
+		if is_instance_valid(clouds_active_toggle):
+			clouds_active_toggle.disabled = true
+			clouds_active_toggle.button_pressed = false
+			
+		if is_instance_valid(clouds_driver_refresh):
+			clouds_driver_refresh.visible = true
+			
+		if is_instance_valid(draw_tools):
 			draw_tools.visible = false
+			
+		if is_instance_valid(clouds_driver_accordian_button):
+			clouds_driver_accordian_button.open_accordion()
+			
+		if is_instance_valid(clouds_status_label):
+			clouds_status_label.text = "Clouds not present"
+			
+	if is_instance_valid(driver) and is_instance_valid(driver.clouds_resource):
+		if is_instance_valid(use_mask_toggle):
+			use_mask_toggle.disabled = false
 	else:
-		clouds_active_toggle.disabled = true
-		clouds_active_toggle.button_pressed = false
-		clouds_driver_refresh.visible = true
-		draw_tools.visible = false
-		clouds_driver_accordian_button.open_accordion()
-		clouds_status_label.text = "Clouds not present"
-	if driver != null && driver.clouds_resource != null:
-		use_mask_toggle.disabled = false
-	else:
-		use_mask_toggle.disabled = true
-		use_mask_toggle.button_pressed = false
+		if is_instance_valid(use_mask_toggle):
+			use_mask_toggle.disabled = true
+			use_mask_toggle.button_pressed = false
+
+
 func update_mask_settings():
 	if (pause_updates):
 		return
@@ -169,6 +213,8 @@ func update_mask_settings():
 			# gdlint: disable=max-line-length
 			driver.clouds_resource.extra_large_noise_patterns = ResourceLoader.load(mask_file_path.text)
 	initialize_mask_texture()
+
+
 func initialize_mask_texture():
 	if not rd:
 		rd = RenderingServer.get_rendering_device()
@@ -197,6 +243,8 @@ func initialize_mask_texture():
 		editor_file_system.scan()
 	RenderingServer.call_on_render_thread(initialize_compute)
 	call_deferred("update_status_display")
+
+
 func initialize_compute() -> void:
 	compute_enabled = false
 	if not rd:
@@ -304,8 +352,12 @@ func execute_compute(delta : float, setvalue : bool, setvalue_color : Color):
 	rd.compute_list_end()
 	await RenderingServer.frame_post_draw
 	rd.texture_get_data_async(current_drawing_mask, 0, complete_retrieval)
+
+
 func complete_retrieval(data: PackedByteArray) -> void:
 	last_image_data = data
+
+
 func iterate_cursor_location(viewport_camera: Camera3D, event:InputEventMouse):
 	if (is_instance_valid(driver) && driver.clouds_resource != null):
 		current_clouds_height = (driver.clouds_resource.cloud_floor
@@ -321,26 +373,40 @@ func iterate_cursor_location(viewport_camera: Camera3D, event:InputEventMouse):
 		draw_brush_tool.visible = true
 		draw_brush_tool.global_position = ray_origin + ray_dir * result
 		draw_brush_tool.global_position.y = driver.clouds_resource.cloud_floor
+
+
 func begin_cursor_draw():
 	drawing_currently = true
+
+
 func end_cursor_draw():
 	drawing_currently = false
+
+
 func scale_drawing_circle_up():
 	draw_scale = min(draw_scale + (draw_scale * 0.1), 100000.0)
 	set_draw_scale()
+
+
 func scale_drawing_circle_down():
 	draw_scale = max(draw_scale - (draw_scale * 0.1), 100.0)
 	set_draw_scale()
+
+
 func draw_mode_cancel():
 	draw_weight_enable.button_pressed = false
 	draw_color_enable.button_pressed = false
 	disable_draw_mode()
+
+
 func set_draw_scale():
 	if driver != null && driver.clouds_resource != null:
 		draw_brush_tool.scale = Vector3(draw_scale,
 			driver.clouds_resource.cloud_ceiling - driver.clouds_resource.cloud_floor, draw_scale)
 	else:
 		draw_brush_tool.scale = Vector3(draw_scale, 1000.0, draw_scale)
+
+
 func flood_fill() -> void:
 	var result_color : Color = draw_color_picker.color
 	result_color.a = draw_strength.value / draw_strength.max_value
@@ -370,28 +436,38 @@ func enable_draw_mode() -> bool:
 		current_root.add_child(draw_brush_tool)
 		set_draw_scale()
 	return true
+
+
 func disable_draw_mode() -> void:
-	draw_color_enable.button_pressed = false
-	draw_weight_enable.button_pressed = false
+	if is_instance_valid(draw_color_enable):
+		draw_color_enable.button_pressed = false
+		
+	if is_instance_valid(draw_weight_enable):
+		draw_weight_enable.button_pressed = false
+		
 	current_draw_mode = DRAWINGMODE.NONE
 	draw_inverted = false
-	if (drawing_currently):
+	
+	if drawing_currently:
 		Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 		drawing_currently = false
-	if (is_instance_valid(draw_brush_tool)):
+		
+	if is_instance_valid(draw_brush_tool):
 		draw_brush_tool.queue_free()
 		draw_brush_tool = null
-	if (last_image_data.size() > 0):
-		print("Saved image to disc")
-		var image: Variant = Image.create_from_data(mask_resolution.value, mask_resolution.value, false,
-			Image.FORMAT_RGBAF, last_image_data)
+		
+	if last_image_data.size() > 0:
+		print("disable_draw_mode: Saved image to disc")
+		var image: Image = Image.create_from_data(mask_resolution.value, mask_resolution.value, false, Image.FORMAT_RGBAF, last_image_data)
 		image.save_exr(mask_file_path.text)
-		var editor_file_system := EditorInterface.get_resource_filesystem()
+		var editor_file_system: EditorFileSystem = EditorInterface.get_resource_filesystem()
 		editor_file_system.scan()
-		last_image_data = []
-		if (driver != null && driver.clouds_resource != null):
-			# gdlint: disable=max-line-length
+		last_image_data = PackedByteArray()
+		
+		if is_instance_valid(driver) and is_instance_valid(driver.clouds_resource):
 			driver.clouds_resource.extra_large_noise_patterns = ResourceLoader.load(mask_file_path.text)
+
+
 func set_draw_invert(mode : bool):
 	if (current_draw_mode == DRAWINGMODE.WEIGHT && draw_inverted != mode):
 		draw_inverted = mode
