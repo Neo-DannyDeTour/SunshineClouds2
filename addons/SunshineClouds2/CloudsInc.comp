@@ -301,6 +301,16 @@ struct GenericData{
 	float accumilation_decay;
 	float isAccumulationA;
     float resolutionscale;
+
+    mat4 cam_projection;
+    mat4 cam_inv_projection;
+    mat4 cam_view;
+    mat4 cam_inv_view;
+
+    mat4 prev_cam_projection;
+    mat4 prev_cam_inv_projection;
+    mat4 prev_cam_view;
+    mat4 prev_cam_inv_view;
 };
 
 struct DirectionalLight {
